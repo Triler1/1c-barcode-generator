@@ -1,28 +1,14 @@
 # System Architecture
 
-The system is designed to generate 2D barcodes (QR, DataMatrix, Aztec) and return them as SVG images.
+The system consists of several main modules.
 
-## Main Modules
+## Modules
 
-### BarcodeEncoder
-Responsible for generating barcode matrices using the ZXing-cpp library.
+- BarcodeEncoder
+- SvgRenderer
+- BarcodeService
+- ComponentInterface
 
-### SvgRenderer
-Converts barcode matrices into SVG images.
+## UML Class Diagram
 
-### BarcodeService
-Provides the public API for barcode generation.
-
-Available methods:
-- GenerateQR
-- GenerateDataMatrix
-- GenerateAztec
-
-### ComponentInterface
-Provides integration with the 1C external component API.
-
-## Module Interaction
-
-The workflow of the system:
-
-1C → ComponentInterface → BarcodeService → BarcodeEncoder → SvgRenderer → SVG
+![UML Class Diagram](uml-class-diagram.png)
