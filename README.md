@@ -25,8 +25,8 @@ The component is planned to support the following barcode types:
 # Repository Structure
 
 ├── README.md  
-├── docs/        # documentation and UML diagrams
-├── src/         # source code
+├── docs/        # documentation and UML diagrams  
+├── src/         # source code  
 └── tests/       # unit tests
 
 ---
