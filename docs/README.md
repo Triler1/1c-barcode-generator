@@ -4,9 +4,9 @@ This directory contains the project documentation for the SVG Barcode Generator.
 
 ## Contents
 
-- **architecture.md** — description of the system architecture and main modules  
-- **implementation-plan.md** — planned steps for implementing the project  
-- **uml-diagram.png** — UML diagram of the system structure
+- [System Architecture](architecture.md) — description of the system architecture and main modules  
+- [Implementation Plan](implementation-plan.md) — planned steps for implementing the project  
+- UML Class Diagram (`uml-diagram.png`)
 
 ## Overview
 
@@ -21,4 +21,8 @@ The system consists of the following modules:
 - **BarcodeEncoder** — generates barcode matrices using ZXing-cpp  
 - **SvgRenderer** — converts barcode matrices into SVG images  
 - **BarcodeService** — provides public API for barcode generation  
-- **ComponentInterface** — integration with 1C external component API
+- **ComponentInterface** — integration with 1C external component API  
+
+## UML Class Diagram
+
+![UML Class Diagram](uml-diagram.png)
