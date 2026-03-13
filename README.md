@@ -1,75 +1,52 @@
 # SVG Barcode Generator for 1C
 
-C++ external component for **1C:Enterprise** that generates **2D barcodes (QR, DataMatrix, Aztec, etc.) in SVG format**.
+C++ external component for 1C:Enterprise for generating 2D barcodes (QR, DataMatrix, Aztec, etc.) in SVG format.
 
----
+## Project Goal
 
-# Project Goal
+The goal of this project is to develop an external component for 1C:Enterprise that generates 2D barcodes in SVG format.
 
-The goal of this project is to develop an external component for **1C:Enterprise** that allows generating 2D barcodes in **SVG format**.
+The project uses the ZXing-cpp library for barcode encoding and converts the result into SVG.
 
-The component uses the **ZXing-cpp** library to encode barcode data and converts the result into SVG images.
+## Planned Features
 
----
+- QR Code generation
+- DataMatrix generation
+- Aztec generation
+- SVG output generation
+- Integration with 1C external component mechanism
+- Unit tests for core modules
 
-# Supported Barcode Types (Planned)
+## Repository Structure
 
-The component is planned to support the following barcode types:
+- `docs/` — project documentation, architecture, UML diagrams
+- `src/` — project source code
+- `tests/` — unit tests
+- `Dockerfile` — optional reproducible build environment
 
-- QR Code
-- DataMatrix
-- Aztec
+## Architecture Overview
 
----
+The system consists of the following main modules:
 
-# Repository Structure
+- `BarcodeEncoder` — barcode generation using ZXing-cpp
+- `SvgRenderer` — conversion of barcode matrix into SVG
+- `BarcodeService` — main service for barcode generation
+- `ComponentInterface` — integration with 1C external component API
 
-├── README.md  
-├── docs/        # documentation and UML diagrams  
-├── src/         # source code  
-└── tests/       # unit tests
+## Build System
 
----
+The project uses **CMake** as the build system.
 
-# Implementation Plan
+## Documentation
 
-The system will consist of several modules:
+Detailed project documentation, implementation plan, and UML diagrams are available here:
 
-**Barcode Encoder**  
-Uses the ZXing-cpp library to encode input data into barcode matrices.
+[Project Documentation](docs/README.md)
 
-**SVG Renderer**  
-Converts the barcode matrix into an SVG image.
+## External Libraries
 
-**1C Component Interface**  
-Provides interaction between the C++ component and 1C:Enterprise.
-
----
-
-# Technologies
-
-- C++
 - ZXing-cpp
-- 1C:Enterprise External Component Technology
-- SVG
 
----
-
-# Documentation
-
-Detailed documentation and UML diagrams are available here:
-
-➡ **[Project Documentation](docs/README.md)**
-
----
-
-# External Libraries
-
-- ZXing-cpp  
-https://github.com/zxing-cpp/zxing-cpp
-
----
-
-# License
+## License
 
 This project is created for educational purposes.
