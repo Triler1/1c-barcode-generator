@@ -33,6 +33,10 @@ The system consists of the following main modules:
 - `BarcodeService` — main service for barcode generation
 - `ComponentInterface` — integration with 1C external component API
 
+See the UML diagram in the documentation:
+
+[UML Class Diagram](docs/uml-class-diagram.png)
+
 ## Build System
 
 The project uses **CMake** as the build system.
@@ -45,7 +49,8 @@ Detailed project documentation, implementation plan, and UML diagrams are availa
 
 ## External Libraries
 
-- ZXing-cpp
+- **ZXing-cpp** — library used for generating barcode matrices  
+  https://github.com/zxing-cpp/zxing-cpp
 
 ## License
 
