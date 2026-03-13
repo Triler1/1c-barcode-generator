@@ -1,0 +1,30 @@
+@startuml
+
+class ComponentInterface {
+  +GenerateQR(data: string): string
+  +GenerateDataMatrix(data: string): string
+  +GenerateAztec(data: string): string
+}
+
+class BarcodeService {
+  +GenerateQR(data: string): string
+  +GenerateDataMatrix(data: string): string
+  +GenerateAztec(data: string): string
+  -GenerateBarcode(data: string, type: BarcodeType): string
+}
+
+class BarcodeEncoder {
+  +EncodeQR(data: string): Matrix
+  +EncodeDataMatrix(data: string): Matrix
+  +EncodeAztec(data: string): Matrix
+}
+
+class SvgRenderer {
+  +Render(matrix: Matrix): string
+}
+
+ComponentInterface --> BarcodeService : uses
+BarcodeService --> BarcodeEncoder : uses
+BarcodeService --> SvgRenderer : uses
+
+@enduml
