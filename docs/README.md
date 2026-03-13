@@ -6,7 +6,7 @@ This directory contains the project documentation for the SVG Barcode Generator.
 
 - [System Architecture](architecture.md) — description of the system architecture and main modules  
 - [Implementation Plan](implementation-plan.md) — planned steps for implementing the project  
-- UML Class Diagram (`uml-diagram.png`)
+- UML Class Diagram (`uml-class-diagram.png`)
 
 ## Overview
 
@@ -25,4 +25,4 @@ The system consists of the following modules:
 
 ## UML Class Diagram
 
-![UML Class Diagram](uml-diagram.png)
+![UML Class Diagram](uml-class-diagram.png)
