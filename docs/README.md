@@ -22,8 +22,9 @@ The system consists of the following modules:
 - **QREncoder** — encoder implementation for QR codes  
 - **DataMatrixEncoder** — encoder implementation for DataMatrix codes  
 - **AztecEncoder** — encoder implementation for Aztec codes  
+- **EncoderFactory** — responsible for creating the appropriate encoder depending on the requested barcode type  
 - **SvgRenderer** — converts barcode matrices into SVG images  
-- **BarcodeService** — provides the public API for barcode generation  
+- **BarcodeService** — provides the public API for barcode generation and coordinates the encoding process  
 - **ComponentInterface** — integration with the 1C external component API  
 
 ## UML Class Diagram
