@@ -19,12 +19,15 @@ Implements the encoding logic for DataMatrix codes using the **ZXing-cpp** libra
 ### AztecEncoder
 Implements the encoding logic for Aztec codes using the **ZXing-cpp** library.
 
+### EncoderFactory
+Responsible for creating the appropriate encoder implementation depending on the requested barcode type.
+
 ### SvgRenderer
 Responsible for converting barcode matrices into SVG images.
 
 ### BarcodeService
 Provides the public API for barcode generation.  
-It selects the appropriate encoder depending on the requested barcode type and then uses the renderer to produce SVG output.
+It uses **EncoderFactory** to obtain the appropriate encoder and then uses **SvgRenderer** to produce SVG output.
 
 ### ComponentInterface
 Provides integration between the C++ implementation and the **1C external component API**, allowing barcode generation to be used inside 1C.
@@ -33,7 +36,7 @@ Provides integration between the C++ implementation and the **1C external compon
 
 The typical workflow of the system:
 
-1C → ComponentInterface → BarcodeService → Encoder → SvgRenderer → SVG
+1C → ComponentInterface → BarcodeService → EncoderFactory → IEncoder → SvgRenderer → SVG
 
 ## UML Class Diagram
 
