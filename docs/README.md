@@ -18,10 +18,13 @@ The system uses the **ZXing-cpp** library to encode barcode data and converts th
 
 The system consists of the following modules:
 
-- **BarcodeEncoder** — generates barcode matrices using ZXing-cpp  
+- **IEncoder** — common interface defining the contract for barcode encoders  
+- **QREncoder** — encoder implementation for QR codes  
+- **DataMatrixEncoder** — encoder implementation for DataMatrix codes  
+- **AztecEncoder** — encoder implementation for Aztec codes  
 - **SvgRenderer** — converts barcode matrices into SVG images  
-- **BarcodeService** — provides public API for barcode generation  
-- **ComponentInterface** — integration with 1C external component API  
+- **BarcodeService** — provides the public API for barcode generation  
+- **ComponentInterface** — integration with the 1C external component API  
 
 ## UML Class Diagram
 
