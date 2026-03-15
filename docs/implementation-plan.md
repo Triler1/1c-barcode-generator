@@ -10,9 +10,10 @@ The development of the project will follow these steps:
    - **QREncoder**
    - **DataMatrixEncoder**
    - **AztecEncoder**
-4. Implement the **SvgRenderer** class that converts barcode matrices into SVG images.
-5. Implement the **BarcodeService** class providing the public API for barcode generation.
-   This service selects the appropriate encoder and returns the generated SVG.
-6. Implement **unit tests** for the core modules.
-7. Implement the **ComponentInterface** for integration with the 1C external component API.
-8. Package the project as an **external component for 1C**.
+4. Implement the **EncoderFactory** class responsible for creating the appropriate encoder based on the requested barcode type.
+5. Implement the **SvgRenderer** class that converts barcode matrices into SVG images.
+6. Implement the **BarcodeService** class providing the public API for barcode generation.  
+   This service uses `EncoderFactory` to obtain the appropriate encoder and returns the generated SVG.
+7. Implement **unit tests** for the core modules.
+8. Implement the **ComponentInterface** for integration with the 1C external component API.
+9. Package the project as an **external component for 1C**.
