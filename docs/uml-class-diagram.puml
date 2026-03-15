@@ -1,22 +1,35 @@
 @startuml
 
 class ComponentInterface {
-  +GenerateQR(data: string): string
-  +GenerateDataMatrix(data: string): string
-  +GenerateAztec(data: string): string
+  +GenerateQR(options: QRCodeOptions): string
+  +GenerateDataMatrix(options: DataMatrixOptions): string
+  +GenerateAztec(options: AztecOptions): string
 }
 
 class BarcodeService {
-  +GenerateQR(data: string): string
-  +GenerateDataMatrix(data: string): string
-  +GenerateAztec(data: string): string
-  -GenerateBarcode(data: string, type: BarcodeType): string
+  +GenerateQR(options: QRCodeOptions): string
+  +GenerateDataMatrix(options: DataMatrixOptions): string
+  +GenerateAztec(options: AztecOptions): string
 }
 
-class BarcodeEncoder {
-  +EncodeQR(data: string): Matrix
-  +EncodeDataMatrix(data: string): Matrix
-  +EncodeAztec(data: string): Matrix
+class EncoderFactory {
+  +CreateEncoder(type: BarcodeType): IEncoder
+}
+
+interface IEncoder {
+  +Encode(options): Matrix
+}
+
+class QREncoder {
+  +Encode(options): Matrix
+}
+
+class DataMatrixEncoder {
+  +Encode(options): Matrix
+}
+
+class AztecEncoder {
+  +Encode(options): Matrix
 }
 
 class SvgRenderer {
@@ -24,7 +37,12 @@ class SvgRenderer {
 }
 
 ComponentInterface --> BarcodeService : uses
-BarcodeService --> BarcodeEncoder : uses
+BarcodeService --> EncoderFactory : uses
 BarcodeService --> SvgRenderer : uses
+EncoderFactory --> IEncoder : creates
+
+QREncoder --|> IEncoder
+DataMatrixEncoder --|> IEncoder
+AztecEncoder --|> IEncoder
 
 @enduml
