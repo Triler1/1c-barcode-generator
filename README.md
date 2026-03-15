@@ -34,6 +34,7 @@ Main components of the system:
 - `QREncoder` — encoder implementation for QR codes
 - `DataMatrixEncoder` — encoder implementation for DataMatrix codes
 - `AztecEncoder` — encoder implementation for Aztec codes
+- `EncoderFactory` — responsible for creating the appropriate encoder depending on the barcode type
 - `BarcodeService` — public API used to generate barcodes and return SVG output
 - `SvgRenderer` — converts barcode matrices into SVG images
 - `ComponentInterface` — integration layer between the C++ code and the 1C external component API
