@@ -36,6 +36,17 @@ class SvgRenderer {
   +Render(matrix: Matrix): string
 }
 
+class QRCodeOptions
+class DataMatrixOptions
+class AztecOptions
+class Matrix
+
+enum BarcodeType {
+  QR
+  DataMatrix
+  Aztec
+}
+
 ComponentInterface --> BarcodeService : uses
 BarcodeService --> EncoderFactory : uses
 BarcodeService --> SvgRenderer : uses
@@ -44,5 +55,17 @@ EncoderFactory --> IEncoder : creates
 QREncoder --|> IEncoder
 DataMatrixEncoder --|> IEncoder
 AztecEncoder --|> IEncoder
+
+ComponentInterface ..> QRCodeOptions
+ComponentInterface ..> DataMatrixOptions
+ComponentInterface ..> AztecOptions
+
+BarcodeService ..> QRCodeOptions
+BarcodeService ..> DataMatrixOptions
+BarcodeService ..> AztecOptions
+
+SvgRenderer ..> Matrix
+IEncoder ..> Matrix
+EncoderFactory ..> BarcodeType
 
 @enduml
