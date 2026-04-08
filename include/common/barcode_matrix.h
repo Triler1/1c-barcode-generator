@@ -7,6 +7,7 @@ class BarcodeMatrix {
     public:
     BarcodeMatrix() = default;
     BarcodeMatrix(std::size_t width, std::size_t height, bool initialValue = false) : width_(width), height_(height), data_(width * height, initialValue) {}
+    
     [[nodiscard]] std::size_t GetWidth() const noexcept {
         return width_;
     }
