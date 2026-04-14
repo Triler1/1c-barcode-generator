@@ -1,7 +1,7 @@
 #include "AztecEncoder.h"
 #include <BarcodeFormat.h>
 #include <MultiFormatWriter.h>
-
+#include <stdexcept>
 ZXing::BitMatrix AztecEncoder::Encode(const std::string& data) {
     if (data.empty()) {
         throw std::invalid_argument("Data must not be empty");
