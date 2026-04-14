@@ -10,9 +10,9 @@ int main()
     setlocale(LC_ALL, "RU");
 
     try {
-        cout << "[INFO] Generating matrix..." << endl;
+        cout << "[INFO] Generating matrix (default size)..." << endl;
 
-        auto matrix = DataMatrixEncoder::encode(L"THIS_IS_KIMPINTYAO", 20, 20);
+        auto matrix = DataMatrixEncoder::encode(L"THIS_IS_KIMPINTYAO");
 
         cout << "[INFO] Rendering SVG..." << endl;
 
@@ -29,7 +29,7 @@ int main()
         cout << "[SUCCESS] barcode.svg created!" << endl;
     }
     catch (const exception& e) {
-        cerr << "[ERROR]" << e.what() << endl;
+        cerr << "[ERROR] " << e.what() << endl;
         return 1;
     }
 

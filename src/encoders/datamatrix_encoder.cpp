@@ -24,3 +24,9 @@ ZXing::BitMatrix DataMatrixEncoder::encode(const wstring& text, int width, int h
         throw runtime_error("DataMatrix encoding failed: " + string(e.what()));
     }
 }
+
+ZXing::BitMatrix DataMatrixEncoder::encode(const wstring& text)
+{
+    // default size
+    return encode(text, 100, 100);
+}
