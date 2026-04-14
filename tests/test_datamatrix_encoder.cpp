@@ -5,29 +5,31 @@
 
 using namespace std;
 
-int main() {
+int main()
+{
     setlocale(LC_ALL, "RU");
 
     try {
-        cout << "1. Генерация матрицы..." << endl;
+        cout << "[INFO] Generating matrix..." << endl;
+
         auto matrix = DataMatrixEncoder::encode(L"THIS_IS_KIMPINTYAO", 20, 20);
 
-        cout << "2. Рендеринг в SVG..." << endl;
+        cout << "[INFO] Rendering SVG..." << endl;
+
         SvgRenderer renderer;
         string svgContent = renderer.Render(matrix);
 
         ofstream file("barcode.svg");
-        if (file.is_open()) {
-            file << svgContent;
-            file.close();
-            cout << "Файл barcode.svg создан!" << endl;
+        if (!file) {
+            throw runtime_error("Cannot open output file");
         }
-        else {
-            cerr << "Не удалось создать файл!" << endl;
-        }
+
+        file << svgContent;
+
+        cout << "[SUCCESS] barcode.svg created!" << endl;
     }
     catch (const exception& e) {
-        cerr << "Ошибка: " << e.what() << endl;
+        cerr << "[ERROR]" << e.what() << endl;
         return 1;
     }
 
