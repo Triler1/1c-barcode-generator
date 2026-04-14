@@ -4,5 +4,5 @@ IEncoder* EncoderFactory::Create(const std::string& type) {
 	if (type == "Aztec") {
 		return new AztecEncoder();
 	}
-	return nullptr;
+	throw std::invalid_argument("Unknown encoder type: " + type);
 }
