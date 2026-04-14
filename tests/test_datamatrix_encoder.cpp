@@ -7,12 +7,10 @@ using namespace std;
 
 int main()
 {
-    setlocale(LC_ALL, "RU");
-
     try {
-        cout << "[INFO] Generating matrix (default size)..." << endl;
+        cout << "[INFO] Generating matrix (std::string input)..." << endl;
 
-        auto matrix = DataMatrixEncoder::encode(L"THIS_IS_KIMPINTYAO");
+        auto matrix = DataMatrixEncoder::encode("THIS_IS_KIMPINTYAO");
 
         cout << "[INFO] Rendering SVG..." << endl;
 

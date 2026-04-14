@@ -6,6 +6,11 @@
 
 using namespace std;
 
+static wstring toWString(const string& str)
+{
+    return wstring(str.begin(), str.end());
+}
+
 ZXing::BitMatrix DataMatrixEncoder::encode(const wstring& text, int width, int height)
 {
     if (text.empty()) {
@@ -27,6 +32,10 @@ ZXing::BitMatrix DataMatrixEncoder::encode(const wstring& text, int width, int h
 
 ZXing::BitMatrix DataMatrixEncoder::encode(const wstring& text)
 {
-    // default size
     return encode(text, 100, 100);
+}
+
+ZXing::BitMatrix DataMatrixEncoder::encode(const string& text)
+{
+    return encode(toWString(text));
 }
