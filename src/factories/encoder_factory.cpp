@@ -1,8 +1,7 @@
-#include "encoder_factory.h"
-#include "aztec_encoder.h"
-#include "qr_encoder.h"
-#include "datamatrix_encoder.h"
-#include "common/barcode_types.h"
+#include "factories/encoder_factory.h"
+#include "encoders/aztec_encoder.h"
+#include "encoders/qr_encoder.h"
+#include "encoders/datamatrix_encoder.h"
 #include <stdexcept>
 
 IEncoder* EncoderFactory::Create(const BarcodeType& type) {
