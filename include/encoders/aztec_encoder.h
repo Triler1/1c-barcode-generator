@@ -4,5 +4,5 @@
 // Энкодер для генерации штрихкодов формата Aztec
 class AztecEncoder : public IEncoder {
 public:
-	BarcodeMatrix AztecEncoder::Encode(const std::string& data) override;
+	BarcodeMatrix Encode(const std::string& data, const BarcodeOptions& options) const override;
 };
