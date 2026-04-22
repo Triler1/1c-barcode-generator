@@ -3,7 +3,7 @@
 #include <ZXing/BarcodeFormat.h>
 #include <ZXing/MultiFormatWriter.h>
 #include <ZXing/WriterException.h>
-
+А к
 #include <stdexcept>
 
 QREncoder::QREncoder(ZXing::QRCode::ErrorCorrectionLevel ecLevel, int version)
