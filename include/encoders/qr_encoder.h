@@ -1,8 +1,8 @@
+#pragma once
 
-#include "iencoder.h"
+#include "encoders/iencoder.h"
 
 #include <ZXing/QRCode/QRErrorCorrectionLevel.h>
-
 #include <string>
 
 class QREncoder : public IEncoder {
@@ -14,9 +14,9 @@ public:
 
     ~QREncoder() override = default;
 
-    ZXing::BitMatrix Encode(const std::string& data) override;
+    BarcodeMatrix Encode(const std::string& data, const BarcodeOptions& options) const override;
 
 private:
     ZXing::QRCode::ErrorCorrectionLevel ecLevel_;
-    int                                  version_;
+    int version_;
 };
