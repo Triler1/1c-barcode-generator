@@ -1,8 +1,11 @@
 #pragma once
+
+#include <memory>
+
 #include "common/barcode_types.h"
-#include "encoders/IEncoder.h"
+#include "encoders/iencoder.h"
 
 class EncoderFactory {
 public:
-    static IEncoder* Create(const BarcodeType& type);
+    [[nodiscard]] static std::unique_ptr<IEncoder> Create(BarcodeType type);
 };
