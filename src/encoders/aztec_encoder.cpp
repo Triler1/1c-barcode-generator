@@ -1,6 +1,7 @@
 #include "encoders/aztec_encoder.h"
-#include <BarcodeFormat.h>
-#include <MultiFormatWriter.h>
+#include <ZXing/BarcodeFormat.h>
+#include <ZXing/MultiFormatWriter.h>
+#include <ZXing/BitMatrix.h>
 #include <stdexcept>
 
 BarcodeMatrix AztecEncoder::Encode(const std::string& data, const BarcodeOptions& options) const {
