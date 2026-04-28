@@ -1,11 +1,12 @@
 #pragma once
+
+#include "encoders/iencoder.h"
+#include "common/barcode_matrix.h"
+#include "common/barcode_options.h"
 #include <string>
-#include "BitMatrix.h"
 
-class DataMatrixEncoder {
+class DataMatrixEncoder : public IEncoder {
 public:
-    static ZXing::BitMatrix encode(const std::wstring& text, int width, int height);
-    static ZXing::BitMatrix encode(const std::wstring& text);
 
-    static ZXing::BitMatrix encode(const std::string& text);
+    [[nodiscard]] BarcodeMatrix Encode(const std::string& data, const BarcodeOptions& options) const override;
 };
