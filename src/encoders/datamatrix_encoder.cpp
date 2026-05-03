@@ -1,41 +1,20 @@
-#include "datamatrix_encoder.h"
-#include "BarcodeFormat.h"
-#include "MultiFormatWriter.h"
+#include "encoders/datamatrix_encoder.h"
+#include <ZXing/BarcodeFormat.h>
+#include <ZXing/MultiFormatWriter.h>
+#include <ZXing/BitMatrix.h>
 
 #include <stdexcept>
+#include <string>
 
-using namespace std;
-
-static wstring toWString(const string& str)
-{
-    return wstring(str.begin(), str.end());
-}
-
-ZXing::BitMatrix DataMatrixEncoder::encode(const wstring& text, int width, int height)
-{
-    if (text.empty()) {
-        throw invalid_argument("Input text must not be empty");
-    }
-
-    if (width <= 0 || height <= 0) {
-        throw invalid_argument("Width and height must be positive");
-    }
-
+BarcodeMatrix DataMatrixEncoder::Encode(const std::string& data, const BarcodeOptions& options) const {
     try {
         ZXing::MultiFormatWriter writer(ZXing::BarcodeFormat::DataMatrix);
-        return writer.encode(text, width, height);
-    }
-    catch (const exception& e) {
-        throw runtime_error("DataMatrix encoding failed: " + string(e.what()));
-    }
-}
 
-ZXing::BitMatrix DataMatrixEncoder::encode(const wstring& text)
-{
-    return encode(text, 100, 100);
-}
-
-ZXing::BitMatrix DataMatrixEncoder::encode(const string& text)
-{
-    return encode(toWString(text));
+        auto zxMatrix = writer.encode(data, 0, 0);
+        
+        return result; 
+    }
+    catch (const std::exception& e) {
+        throw std::runtime_error("Ошибка DataMatrix: " + std::string(e.what()));
+    }
 }
