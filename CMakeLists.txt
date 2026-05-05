@@ -6,11 +6,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
-endif()
+include(FetchContent)
 
-find_package(ZXing CONFIG REQUIRED)
+FetchContent_Declare(
+    zxing
+    GIT_REPOSITORY https://github.com/zxing-cpp/zxing-cpp.git
+    GIT_TAG        v3.0.2
+    GIT_SHALLOW    TRUE
+)
+
+set(BUILD_WRITERS ON  CACHE BOOL "Build barcode writers" FORCE)
+set(BUILD_READERS ON  CACHE BOOL "Build barcode readers" FORCE)
+set(BUILD_EXAMPLES OFF CACHE BOOL "Build examples" FORCE)
+set(BUILD_TESTS    OFF CACHE BOOL "Build tests" FORCE)
+
+FetchContent_MakeAvailable(zxing)
 
 set(SOURCES
     src/renderers/svg_renderer.cpp
@@ -19,7 +29,7 @@ set(SOURCES
     src/encoders/qr_encoder.cpp
     src/encoders/datamatrix_encoder.cpp
     src/encoders/aztec_encoder.cpp
-    src/component/component_interface.cpp          # ← добавьте, если файла ещё нет
+    src/component/component_interface.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
