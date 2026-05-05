@@ -1,0 +1,10 @@
+{
+  "name": "1c-barcode-generator",
+  "version": "1.0.0",
+  "dependencies": [
+    {
+      "name": "nu-book-zxing-cpp",
+      "version>=": "2.3.0"
+    }
+  ]
+}
