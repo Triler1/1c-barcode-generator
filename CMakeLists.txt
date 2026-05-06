@@ -6,21 +6,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-include(FetchContent)
+add_subdirectory(external/zxing-cpp EXCLUDE_FROM_ALL)
 
-FetchContent_Declare(
-    zxing
-    GIT_REPOSITORY https://github.com/zxing-cpp/zxing-cpp.git
-    GIT_TAG        v3.0.2
-    GIT_SHALLOW    TRUE
-)
+set(ZXING_USE_BUNDLED_ZINT OFF CACHE BOOL "" FORCE)
 
-set(BUILD_WRITERS ON  CACHE BOOL "Build barcode writers" FORCE)
-set(BUILD_READERS ON  CACHE BOOL "Build barcode readers" FORCE)
-set(BUILD_EXAMPLES OFF CACHE BOOL "Build examples" FORCE)
-set(BUILD_TESTS    OFF CACHE BOOL "Build tests" FORCE)
-
-FetchContent_MakeAvailable(zxing)
+set(BUILD_WRITERS ON  CACHE BOOL "" FORCE)
+set(BUILD_READERS OFF CACHE BOOL "" FORCE)
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(BUILD_TESTS    OFF CACHE BOOL "" FORCE)
 
 set(SOURCES
     src/renderers/svg_renderer.cpp
@@ -38,25 +31,30 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+# Надёжное подключение заголовков (работает на всех ОС)
+target_include_directories(${PROJECT_NAME} PRIVATE
+    $<TARGET_PROPERTY:ZXing::ZXing,INTERFACE_INCLUDE_DIRECTORIES>
+)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE ZXing::ZXing)
 
 if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES
-        OUTPUT_NAME "BarcodeGenerator"      # ← имя DLL без .dll
+        OUTPUT_NAME "BarcodeGenerator"
         PREFIX ""
         SUFFIX ".dll"
-    )
-elseif(UNIX AND NOT APPLE)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        OUTPUT_NAME "BarcodeGenerator"
-        PREFIX "lib"
-        SUFFIX ".so"
     )
 elseif(APPLE)
     set_target_properties(${PROJECT_NAME} PROPERTIES
         OUTPUT_NAME "BarcodeGenerator"
         PREFIX "lib"
         SUFFIX ".dylib"
+    )
+else()
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        OUTPUT_NAME "BarcodeGenerator"
+        PREFIX "lib"
+        SUFFIX ".so"
     )
 endif()
 
