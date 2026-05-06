@@ -1,0 +1,46 @@
+[build-system]
+requires = [
+    "setuptools>=77",
+#    "setuptools-scm>=8",
+    "wheel",
+    "cmake>=3.18",
+    "pybind11[global]",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zxing-cpp"
+#dynamic = ["version"]
+version = "3.0.0"
+description = "Python bindings for the zxing-cpp barcode library"
+readme = "README.md"
+authors = [
+    { name = "zxing-cpp community", email = "zxingcpp@gmail.com" },
+]
+license = "Apache-2.0"
+keywords = ["barcode"]
+requires-python = ">=3.9"
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Multimedia :: Graphics",
+]
+
+[project.urls]
+Homepage = "https://github.com/zxing-cpp/zxing-cpp"
+Repository = "https://github.com/zxing-cpp/zxing-cpp.git"
+Issues = "https://github.com/zxing-cpp/zxing-cpp/issues"
+
+[tool.setuptools]
+include-package-data = false
+
+# [tool.setuptools_scm]
+# root = "../.."
+# version_scheme = "guess-next-dev"
+# local_scheme = "no-local-version"
+# tag_regex = "^v?(\\d+\\.\\d+\\.\\d+)"
+# fallback_version = "0.0.0"
+# write_to = "zxingcpp/_version.py"
