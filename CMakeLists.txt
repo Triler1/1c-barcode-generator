@@ -6,14 +6,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_subdirectory(external/zxing-cpp EXCLUDE_FROM_ALL)
-
-set(ZXING_USE_BUNDLED_ZINT OFF CACHE BOOL "" FORCE)
-
+set(ZXING_USE_BUNDLED_ZINT ON CACHE BOOL "" FORCE)
 set(BUILD_WRITERS ON  CACHE BOOL "" FORCE)
 set(BUILD_READERS OFF CACHE BOOL "" FORCE)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_TESTS    OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(external/zxing-cpp EXCLUDE_FROM_ALL)
 
 set(SOURCES
     src/renderers/svg_renderer.cpp
@@ -31,7 +30,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-# Надёжное подключение заголовков (работает на всех ОС)
 target_include_directories(${PROJECT_NAME} PRIVATE
     $<TARGET_PROPERTY:ZXing::ZXing,INTERFACE_INCLUDE_DIRECTORIES>
 )
