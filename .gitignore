@@ -2,6 +2,7 @@
 build/
 out/
 bin/
+/.cache/
 
 # CMake
 CMakeFiles/
