@@ -12,3 +12,6 @@ protected:
 TEST_F(DataMatrixEncoderTest, Dummy) {
     EXPECT_TRUE(true);
 }
+TEST_F(DataMatrixEncoderTest, EmptyData_ThrowsInvalidArgument) {
+    EXPECT_THROW(encoder.Encode("", defaults), std::invalid_argument);
+}
