@@ -8,6 +8,12 @@ BarcodeMatrix DataMatrixEncoder::Encode(const std::string& data, const BarcodeOp
     if (data.empty()) {
         throw std::invalid_argument("Data must not be empty");
     }
+    if (options.ModuleSize <= 0) {
+        throw std::invalid_argument("ModuleSize must be positive");
+    }
+    if (options.Margin < 0) {
+        throw std::invalid_argument("Margin must be non-negative");
+    }
     const int BarcodeSize = 200;
     try {
         auto writer = ZXing::MultiFormatWriter(ZXing::BarcodeFormat::DataMatrix);
