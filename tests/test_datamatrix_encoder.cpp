@@ -61,3 +61,12 @@ TEST_F(DataMatrixEncoderTest, VeryLongInput_DoesNotCrash) {
     EXPECT_FALSE(result.IsEmpty());
     EXPECT_GT(result.GetWidth(), 0u);
 }
+TEST_F(DataMatrixEncoderTest, Matrix_HasAtLeastOneBlackCell) {
+    BarcodeMatrix result = encoder.Encode("Some data", defaults);
+    bool hasBlack = false;
+    for (std::size_t y = 0; y < result.GetHeight(); ++y)
+        for (std::size_t x = 0; x < result.GetWidth(); ++x)
+            if (result.Get(x, y))
+                hasBlack = true;
+    EXPECT_TRUE(hasBlack);
+}
