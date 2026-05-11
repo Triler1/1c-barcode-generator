@@ -19,3 +19,8 @@ TEST_F(DataMatrixEncoderTest, ValidData_ReturnsNonEmptyMatrix) {
     BarcodeMatrix result = encoder.Encode("Hello", defaults);
     EXPECT_FALSE(result.IsEmpty());
 }
+TEST_F(DataMatrixEncoderTest, ValidData_MatrixHasPositiveDimensions) {
+    BarcodeMatrix result = encoder.Encode("Test", defaults);
+    EXPECT_GT(result.GetWidth(), 0u);
+    EXPECT_GT(result.GetHeight(), 0u);
+}
