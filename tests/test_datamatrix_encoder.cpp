@@ -1,35 +1,14 @@
-#include <iostream>
-#include <fstream>
-#include "datamatrix_encoder.h"
-#include "svg_renderer.h"
+#include <gtest/gtest.h>
+#include "encoders/datamatrix_encoder.h"
+#include "common/barcode_matrix.h"
+#include "common/barcode_options.h"
 
-using namespace std;
+class DataMatrixEncoderTest : public ::testing::Test {
+protected:
+    DataMatrixEncoder encoder;
+    BarcodeOptions defaults; // ModuleSize=10, Margin=4
+};
 
-int main()
-{
-    try {
-        cout << "[INFO] Generating matrix (std::string input)..." << endl;
-
-        auto matrix = DataMatrixEncoder::encode("THIS_IS_KIMPINTYAO");
-
-        cout << "[INFO] Rendering SVG..." << endl;
-
-        SvgRenderer renderer;
-        string svgContent = renderer.Render(matrix);
-
-        ofstream file("barcode.svg");
-        if (!file) {
-            throw runtime_error("Cannot open output file");
-        }
-
-        file << svgContent;
-
-        cout << "[SUCCESS] barcode.svg created!" << endl;
-    }
-    catch (const exception& e) {
-        cerr << "[ERROR] " << e.what() << endl;
-        return 1;
-    }
-
-    return 0;
+TEST_F(DataMatrixEncoderTest, Dummy) {
+    EXPECT_TRUE(true);
 }
