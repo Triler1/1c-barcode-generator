@@ -43,3 +43,8 @@ TEST_F(DataMatrixEncoderTest, SameData_ProduceSameMatrix) {
         for (std::size_t x = 0; x < result1.GetWidth(); ++x)
             EXPECT_EQ(result1.Get(x, y), result2.Get(x, y));
 }
+TEST_F(DataMatrixEncoderTest, LongerData_ProducesLargerOrEqualMatrix) {
+    BarcodeMatrix shortResult = encoder.Encode("Hi", defaults);
+    BarcodeMatrix longResult  = encoder.Encode(std::string(200, 'A'), defaults);
+    EXPECT_GE(longResult.GetWidth(), shortResult.GetWidth());
+}
