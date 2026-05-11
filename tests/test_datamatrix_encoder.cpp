@@ -83,3 +83,8 @@ TEST_F(DataMatrixEncoderTest, ZeroModuleSize_ThrowsInvalidArgument) {
     opts.ModuleSize = 0;
     EXPECT_THROW(encoder.Encode("Test", opts), std::invalid_argument);
 }
+TEST_F(DataMatrixEncoderTest, NegativeMargin_ThrowsInvalidArgument) {
+    BarcodeOptions opts;
+    opts.Margin = -1;
+    EXPECT_THROW(encoder.Encode("Test", opts), std::invalid_argument);
+}
