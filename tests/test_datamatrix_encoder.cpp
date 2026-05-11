@@ -48,3 +48,9 @@ TEST_F(DataMatrixEncoderTest, LongerData_ProducesLargerOrEqualMatrix) {
     BarcodeMatrix longResult  = encoder.Encode(std::string(200, 'A'), defaults);
     EXPECT_GE(longResult.GetWidth(), shortResult.GetWidth());
 }
+TEST_F(DataMatrixEncoderTest, SpecialCharacters_DoNotCrash) {
+    EXPECT_NO_THROW(encoder.Encode("Привет\nWorld\t!", defaults));
+    BarcodeMatrix result = encoder.Encode("Привет\nWorld\t!", defaults);
+    EXPECT_FALSE(result.IsEmpty());
+    EXPECT_GT(result.GetWidth(), 0u);
+}
