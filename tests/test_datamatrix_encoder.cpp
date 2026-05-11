@@ -54,3 +54,10 @@ TEST_F(DataMatrixEncoderTest, SpecialCharacters_DoNotCrash) {
     EXPECT_FALSE(result.IsEmpty());
     EXPECT_GT(result.GetWidth(), 0u);
 }
+TEST_F(DataMatrixEncoderTest, VeryLongInput_DoesNotCrash) {
+    std::string longData(5000, 'A');
+    BarcodeMatrix result;
+    EXPECT_NO_THROW(result = encoder.Encode(longData, defaults));
+    EXPECT_FALSE(result.IsEmpty());
+    EXPECT_GT(result.GetWidth(), 0u);
+}
