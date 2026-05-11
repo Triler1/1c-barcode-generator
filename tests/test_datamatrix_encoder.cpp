@@ -15,3 +15,7 @@ TEST_F(DataMatrixEncoderTest, Dummy) {
 TEST_F(DataMatrixEncoderTest, EmptyData_ThrowsInvalidArgument) {
     EXPECT_THROW(encoder.Encode("", defaults), std::invalid_argument);
 }
+TEST_F(DataMatrixEncoderTest, ValidData_ReturnsNonEmptyMatrix) {
+    BarcodeMatrix result = encoder.Encode("Hello", defaults);
+    EXPECT_FALSE(result.IsEmpty());
+}
