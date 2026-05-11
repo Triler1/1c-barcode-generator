@@ -34,3 +34,12 @@ TEST_F(DataMatrixEncoderTest, DifferentData_ProduceDifferentMatrices) {
                 differ = true;
     EXPECT_TRUE(differ);
 }
+TEST_F(DataMatrixEncoderTest, SameData_ProduceSameMatrix) {
+    BarcodeMatrix result1 = encoder.Encode("Test", defaults);
+    BarcodeMatrix result2 = encoder.Encode("Test", defaults);
+    ASSERT_EQ(result1.GetWidth(), result2.GetWidth());
+    ASSERT_EQ(result1.GetHeight(), result2.GetHeight());
+    for (std::size_t y = 0; y < result1.GetHeight(); ++y)
+        for (std::size_t x = 0; x < result1.GetWidth(); ++x)
+            EXPECT_EQ(result1.Get(x, y), result2.Get(x, y));
+}
