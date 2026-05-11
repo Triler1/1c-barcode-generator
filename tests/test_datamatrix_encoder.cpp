@@ -24,3 +24,13 @@ TEST_F(DataMatrixEncoderTest, ValidData_MatrixHasPositiveDimensions) {
     EXPECT_GT(result.GetWidth(), 0u);
     EXPECT_GT(result.GetHeight(), 0u);
 }
+TEST_F(DataMatrixEncoderTest, DifferentData_ProduceDifferentMatrices) {
+    BarcodeMatrix result1 = encoder.Encode("Hello", defaults);
+    BarcodeMatrix result2 = encoder.Encode("World", defaults);
+    bool differ = false;
+    for (std::size_t y = 0; y < result1.GetHeight() && !differ; ++y)
+        for (std::size_t x = 0; x < result1.GetWidth() && !differ; ++x)
+            if (result1.Get(x, y) != result2.Get(x, y))
+                differ = true;
+    EXPECT_TRUE(differ);
+}
