@@ -78,3 +78,8 @@ TEST_F(DataMatrixEncoderTest, Matrix_IsNotCompletelyBlack) {
             if (!result.Get(x, y))
                 hasWhite = true;
     EXPECT_TRUE(hasWhite);
+TEST_F(DataMatrixEncoderTest, ZeroModuleSize_ThrowsInvalidArgument) {
+    BarcodeOptions opts;
+    opts.ModuleSize = 0;
+    EXPECT_THROW(encoder.Encode("Test", opts), std::invalid_argument);
+}
