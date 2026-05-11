@@ -1,18 +1,25 @@
 #include "encoders/datamatrix_encoder.h"
-#include <ZXing/BarcodeFormat.h>
-#include <ZXing/MultiFormatWriter.h>
-#include <ZXing/BitMatrix.h>
-
+#include <BarcodeFormat.h>
+#include <MultiFormatWriter.h>
+#include <BitMatrix.h>
 #include <stdexcept>
-#include <string>
 
 BarcodeMatrix DataMatrixEncoder::Encode(const std::string& data, const BarcodeOptions& options) const {
+    if (data.empty()) {
+        throw std::invalid_argument("Data must not be empty");
+    }
+    const int BarcodeSize = 200;
     try {
-        ZXing::MultiFormatWriter writer(ZXing::BarcodeFormat::DataMatrix);
+        auto writer = ZXing::MultiFormatWriter(ZXing::BarcodeFormat::DataMatrix);
+        auto zxMatrix = writer.encode(data, BarcodeSize, BarcodeSize);
+        BarcodeMatrix result(zxMatrix.width(), zxMatrix.height());
 
-        auto zxMatrix = writer.encode(data, 0, 0);
-        
-        return result; 
+        for (int y = 0; y < zxMatrix.height(); y++) {
+            for (int x = 0; x < zxMatrix.width(); x++) {
+                result.Set(x, y, zxMatrix.get(x, y));
+            }
+        }
+        return result;
     }
     catch (const std::exception& e) {
         throw std::runtime_error("Ошибка DataMatrix: " + std::string(e.what()));
