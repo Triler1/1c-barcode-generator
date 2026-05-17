@@ -1,0 +1,8 @@
+LIBRARY    "BarcodeGenerator.dll"
+
+EXPORTS
+GetClassObject
+DestroyObject
+GetClassNames
+SetPlatformCapabilities
+GetAttachType

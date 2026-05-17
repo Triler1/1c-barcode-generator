@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+if(WIN32)
+    enable_language(RC)
+endif()
+
 set(ZXING_USE_BUNDLED_ZINT ON CACHE BOOL "" FORCE)
 set(BUILD_WRITERS ON  CACHE BOOL "" FORCE)
 set(BUILD_READERS OFF CACHE BOOL "" FORCE)
@@ -24,6 +28,14 @@ set(SOURCES
     src/component/component_interface.cpp
 )
 
+if(WIN32)
+    # Добавляем файлы линкера и ресурсов из шаблона в список сборки твоих файлов
+    list(APPEND SOURCES AddInNative.rc AddInNative.def)
+    
+    # Добавляем обязательные для шаблона 1С макросы Windows
+    add_definitions(-DUNICODE -D_UNICODE -DWIN32 -D_USRDLL -D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -34,7 +46,20 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     $<TARGET_PROPERTY:ZXing::ZXing,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/1c-sdk/include
+)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE ZXing::ZXing)
+
+if(UNIX)
+    if(APPLE)
+        target_link_libraries(${PROJECT_NAME} PRIVATE iconv)
+    else()
+        # Скрываем все внутренние методы, оставляя видимыми только точки входа 1С
+        set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
+    endif()
+endif()
 
 if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES
