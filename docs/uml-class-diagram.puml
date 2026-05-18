@@ -1,45 +1,69 @@
 @startuml
 
+title SVG Barcode Generator for 1C - Core Architecture
+
+skinparam classAttributeIconSize 0
+
 class ComponentInterface {
-  +GenerateQR(options: QRCodeOptions): string
-  +GenerateDataMatrix(options: DataMatrixOptions): string
-  +GenerateAztec(options: AztecOptions): string
+  -m_service: BarcodeService
+  +Init(pConnection: void*): bool
+  +Done(): void
+  +RegisterExtensionAs(wsExtName: WCHAR_T**): bool
+  +GetNMethods(): long
+  +FindMethod(wsMethodName: WCHAR_T*): long
+  +GetMethodName(methodNum: long, alias: long): WCHAR_T*
+  +GetNParams(methodNum: long): long
+  +HasRetVal(methodNum: long): bool
+  +CallAsFunc(methodNum: long, retValue: tVariant*, params: tVariant*, size: long): bool
+  -extractString(param: tVariant*): string
+  -extractInt(param: tVariant*, out: int&): bool
+  -returnWString(retValue: tVariant*, svg: string): bool
 }
 
 class BarcodeService {
-  +GenerateQR(options: QRCodeOptions): string
-  +GenerateDataMatrix(options: DataMatrixOptions): string
-  +GenerateAztec(options: AztecOptions): string
+  -renderer_: SvgRenderer
+  +Generate(data: string, type: BarcodeType, options: BarcodeOptions): string
 }
 
 class EncoderFactory {
-  +CreateEncoder(type: BarcodeType): IEncoder
+  +Create(type: BarcodeType): unique_ptr<IEncoder>
 }
 
 interface IEncoder {
-  +Encode(options): Matrix
+  +Encode(data: string, options: BarcodeOptions): BarcodeMatrix
 }
 
 class QREncoder {
-  +Encode(options): Matrix
+  +Encode(data: string, options: BarcodeOptions): BarcodeMatrix
 }
 
 class DataMatrixEncoder {
-  +Encode(options): Matrix
+  +Encode(data: string, options: BarcodeOptions): BarcodeMatrix
 }
 
 class AztecEncoder {
-  +Encode(options): Matrix
+  +Encode(data: string, options: BarcodeOptions): BarcodeMatrix
 }
 
 class SvgRenderer {
-  +Render(matrix: Matrix): string
+  +Render(matrix: BarcodeMatrix, options: BarcodeOptions): string
 }
 
-class QRCodeOptions
-class DataMatrixOptions
-class AztecOptions
-class Matrix
+class BarcodeMatrix {
+  -width_: size_t
+  -height_: size_t
+  -data_: vector<bool>
+  +GetWidth(): size_t
+  +GetHeight(): size_t
+  +IsEmpty(): bool
+  +Get(x: size_t, y: size_t): bool
+  +Set(x: size_t, y: size_t, value: bool): void
+}
+
+class BarcodeOptions {
+  +ModuleSize: size_t
+  +Margin: size_t
+}
 
 enum BarcodeType {
   QR
@@ -48,24 +72,29 @@ enum BarcodeType {
 }
 
 ComponentInterface --> BarcodeService : uses
-BarcodeService --> EncoderFactory : uses
-BarcodeService --> SvgRenderer : uses
-EncoderFactory --> IEncoder : creates
+BarcodeService --> EncoderFactory : creates encoder
+BarcodeService --> SvgRenderer : renders matrix
+EncoderFactory --> IEncoder : returns
 
-QREncoder --|> IEncoder
-DataMatrixEncoder --|> IEncoder
-AztecEncoder --|> IEncoder
+IEncoder <|.. QREncoder
+IEncoder <|.. DataMatrixEncoder
+IEncoder <|.. AztecEncoder
 
-ComponentInterface ..> QRCodeOptions
-ComponentInterface ..> DataMatrixOptions
-ComponentInterface ..> AztecOptions
+QREncoder ..> BarcodeMatrix : returns
+DataMatrixEncoder ..> BarcodeMatrix : returns
+AztecEncoder ..> BarcodeMatrix : returns
 
-BarcodeService ..> QRCodeOptions
-BarcodeService ..> DataMatrixOptions
-BarcodeService ..> AztecOptions
+QREncoder ..> BarcodeOptions : uses
+DataMatrixEncoder ..> BarcodeOptions : uses
+AztecEncoder ..> BarcodeOptions : uses
 
-SvgRenderer ..> Matrix
-IEncoder ..> Matrix
-EncoderFactory ..> BarcodeType
+SvgRenderer ..> BarcodeMatrix : reads
+SvgRenderer ..> BarcodeOptions : uses
+
+BarcodeService ..> BarcodeType : selects type
+EncoderFactory ..> BarcodeType : uses
+
+ComponentInterface ..> BarcodeOptions : builds from 1C params
+ComponentInterface ..> BarcodeType : selects by method
 
 @enduml
