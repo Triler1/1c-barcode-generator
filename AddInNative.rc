@@ -27,8 +27,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,4,2,01
- PRODUCTVERSION 1,4,2,01
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -43,14 +43,14 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "MyCompany"
-            VALUE "FileDescription", "AddInNative"
-            VALUE "FileVersion", "1,4,2,01"
-            VALUE "InternalName", "AddInNative"
-            VALUE "LegalCopyright", "Copyright © MyCompany 2022 All rights reserved."
-            VALUE "OriginalFilename", "AddInNative.dll"
-            VALUE "ProductName", "MyCompany External Component Sample"
-            VALUE "ProductVersion", "1,4,2,01"
+            VALUE "CompanyName", "Triler"
+            VALUE "FileDescription", "1C Barcode Generator"
+            VALUE "FileVersion", "1,0,0,0"
+            VALUE "InternalName", "BarcodeGenerator"
+            VALUE "LegalCopyright", "Copyright Â© Triler 2026 All rights reserved."
+            VALUE "OriginalFilename", "BarcodeGenerator.dll"
+            VALUE "ProductName", "SVG Barcode Generator for 1C"
+            VALUE "ProductVersion", "1,0,0,0"
         END
     END
     BLOCK "VarFileInfo"

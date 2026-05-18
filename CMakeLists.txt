@@ -26,14 +26,19 @@ set(SOURCES
     src/encoders/datamatrix_encoder.cpp
     src/encoders/aztec_encoder.cpp
     src/component/component_interface.cpp
+    src/dllmain.cpp 
 )
 
 if(WIN32)
-    # Добавляем файлы линкера и ресурсов из шаблона в список сборки твоих файлов
     list(APPEND SOURCES AddInNative.rc AddInNative.def)
-    
-    # Добавляем обязательные для шаблона 1С макросы Windows
-    add_definitions(-DUNICODE -D_UNICODE -DWIN32 -D_USRDLL -D_CRT_SECURE_NO_WARNINGS)
+endif()
+
+if (UNIX)
+    if (APPLE)
+        ADD_DEFINITIONS(-D__APPLE__ )
+    endif()
+else()
+    add_definitions(-DUNICODE -D_UNICODE -DWIN32 -D_USRDLL -D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE -DADDINCPP_EXPORTS)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
@@ -56,7 +61,6 @@ if(UNIX)
     if(APPLE)
         target_link_libraries(${PROJECT_NAME} PRIVATE iconv)
     else()
-        # Скрываем все внутренние методы, оставляя видимыми только точки входа 1С
         set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
     endif()
 endif()
@@ -80,6 +84,10 @@ else()
         SUFFIX ".so"
     )
 endif()
+
+IF (UNIX AND NOT APPLE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,--no-undefined -Xlinker --version-script -Xlinker ${CMAKE_CURRENT_SOURCE_DIR}/version.script" )
+ENDIF()
 
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin

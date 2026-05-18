@@ -1,3 +1,6 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include "component/component_interface.h"
 
 #include "common/barcode_options.h"
@@ -108,7 +111,7 @@ static std::u16string s_classNames(g_kClassName);
 long GetClassObject(const WCHAR_T* wsName, IComponentBase** pInterface) {
     if (!*pInterface) {
         *pInterface = new ComponentInterface;
-        return (long)*pInterface;
+        return (*pInterface != nullptr) ? 1 : 0;
     }
     return 0;
 }
@@ -330,16 +333,18 @@ bool ComponentInterface::returnWString(tVariant* pvarRetValue, const std::string
     if (!m_iMemory)
         return false;
 
-    // SVG — ASCII-совместим, поэтому прямое расширение до UTF-16 корректно.
-    std::u16string u16(utf8str.begin(), utf8str.end());
-    size_t len = u16.size();
+    // 1. Сначала переводим из UTF-8 std::string в стандартную системную wstring
+    std::wstring wstr(utf8str.begin(), utf8str.end());
+    size_t len = wstr.size() + 1; // +1 для терминирующего нуля
 
-    if (!m_iMemory->AllocMemory((void**)&pvarRetValue->pwstrVal,
-                                 (unsigned)(len + 1) * sizeof(WCHAR_T)))
+    // 2. Выделяем память строго с учетом размера WCHAR_T на текущей ОС
+    if (!m_iMemory->AllocMemory((void**)&pvarRetValue->pwstrVal, (unsigned)len * sizeof(WCHAR_T)))
         return false;
 
-    ::memcpy(pvarRetValue->pwstrVal, u16.data(), len * sizeof(WCHAR_T));
-    pvarRetValue->wstrLen = (unsigned)len;
+    // 3. Используем твою функцию конвертации, которая правильно заполнит типы на Windows и Mac
+    convToShortWchar(&pvarRetValue->pwstrVal, wstr.c_str(), len);
+    
+    pvarRetValue->wstrLen = (unsigned)(len - 1);
     TV_VT(pvarRetValue) = VTYPE_PWSTR;
     return true;
 }
