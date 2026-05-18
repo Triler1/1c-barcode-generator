@@ -1,131 +1,374 @@
+<div align="center">
+
 # SVG Barcode Generator for 1C
 
-![C++20](https://img.shields.io/badge/C%2B%2B-20-0A66C2?logo=c%2B%2B&logoColor=white&style=for-the-badge)
-![CMake](https://img.shields.io/badge/CMake-3.20+-1E2A44?logo=cmake&logoColor=white&style=for-the-badge)
-![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux%20%7C%20macOS-2D2D2D?logo=windows11&logoColor=white&style=for-the-badge)
-![Powered by ZXing](https://img.shields.io/badge/Powered%20by-ZXing--cpp-6B238E?logo=barcode&logoColor=white&style=for-the-badge)
-![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)
+**Native C++ external component for 1C:Enterprise  
+for generating 2D barcodes in clean SVG format**
 
-C++ external component for 1C:Enterprise for generating 2D barcodes (QR, DataMatrix, Aztec) in SVG format.
+<br>
 
-## Project Goal
+<img src="https://img.shields.io/badge/C%2B%2B-20-0A66C2?logo=c%2B%2B&logoColor=white&style=for-the-badge" alt="C++20">
+<img src="https://img.shields.io/badge/CMake-3.20+-1E2A44?logo=cmake&logoColor=white&style=for-the-badge" alt="CMake">
+<img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux%20%7C%20macOS-2D2D2D?style=for-the-badge" alt="Platforms">
+<img src="https://img.shields.io/badge/Powered%20by-ZXing--cpp-6B238E?style=for-the-badge" alt="ZXing-cpp">
+<img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge" alt="License">
 
-The goal of this project is to develop an external component for 1C:Enterprise that generates 2D barcodes in SVG format.
+<br>
+<br>
 
-The project uses the ZXing-cpp library for barcode encoding and converts the result into SVG.
+<a href="#overview">Overview</a>
+&nbsp;•&nbsp;
+<a href="#features">Features</a>
+&nbsp;•&nbsp;
+<a href="#architecture">Architecture</a>
+&nbsp;•&nbsp;
+<a href="#building">Building</a>
+&nbsp;•&nbsp;
+<a href="#testing">Testing</a>
+&nbsp;•&nbsp;
+<a href="#documentation">Documentation</a>
 
-## Planned Features
+</div>
 
-- QR Code generation
-- DataMatrix generation
-- Aztec generation
-- SVG output generation
-- Integration with 1C external component mechanism
-- Unit tests for core modules
+---
+
+## Overview
+
+**SVG Barcode Generator for 1C** is a cross-platform native C++ external component for **1C:Enterprise**.
+
+It generates 2D barcodes and returns them as **SVG markup**, making the result suitable for:
+
+- printed forms;
+- reports;
+- documents;
+- labels;
+- web pages;
+- scalable UI rendering.
+
+The project uses [ZXing-cpp](https://github.com/zxing-cpp/zxing-cpp) for barcode encoding and converts the generated barcode matrix into SVG.
+
+---
+
+## Features
+
+<table>
+  <tr>
+    <td><b>QR Code</b></td>
+    <td>Generate QR codes as SVG</td>
+  </tr>
+  <tr>
+    <td><b>DataMatrix</b></td>
+    <td>Generate DataMatrix codes as SVG</td>
+  </tr>
+  <tr>
+    <td><b>Aztec</b></td>
+    <td>Generate Aztec barcodes as SVG</td>
+  </tr>
+  <tr>
+    <td><b>1C Integration</b></td>
+    <td>Native external component API integration</td>
+  </tr>
+  <tr>
+    <td><b>Cross-platform</b></td>
+    <td>Windows, Linux, and macOS builds</td>
+  </tr>
+  <tr>
+    <td><b>Modern C++</b></td>
+    <td>C++20, modular architecture, CMake build system</td>
+  </tr>
+</table>
+
+---
+
+## Supported Barcode Types
+
+| Barcode type | Status | Output |
+|---|---:|---|
+| QR Code | Supported | SVG |
+| DataMatrix | Supported | SVG |
+| Aztec | Supported | SVG |
+
+---
+
+## Why SVG?
+
+SVG output is useful because it is:
+
+- scalable without quality loss;
+- easy to embed into HTML;
+- suitable for printing;
+- lightweight;
+- independent from raster image formats;
+- easy to store as plain text.
+
+---
 
 ## Repository Structure
 
+```text
+include/        Public headers, interfaces, and declarations
+src/            Component implementation and core logic
+external/       Third-party libraries: ZXing-cpp and 1C Native API SDK
+docs/           Project documentation, architecture notes, and UML diagrams
+tests/          Unit tests for encoders, services, factories, and renderers
 ```
-include/        — public headers and encoder interfaces
-src/            — implementation of encoders and services
-external/       — third-party libraries (ZXing-cpp, 1C Native API SDK)
-docs/           — project documentation and UML diagrams
-tests/          — unit tests
-```
 
-## Architecture Overview
+---
 
-The system is built using a modular architecture with separate encoders for different barcode types.
+## Architecture
 
-Main components of the system:
+The project follows a layered architecture where barcode encoding, rendering, service logic, and 1C integration are separated into independent modules.
 
-- `IEncoder` — common interface defining the contract for barcode encoders
-- `QREncoder` — encoder implementation for QR codes
-- `DataMatrixEncoder` — encoder implementation for DataMatrix codes
-- `AztecEncoder` — encoder implementation for Aztec codes
-- `EncoderFactory` — responsible for creating the appropriate encoder depending on the barcode type
-- `BarcodeService` — public API used to generate barcodes and return SVG output
-- `SvgRenderer` — converts barcode matrices into SVG images
-- `ComponentInterface` — integration layer between the C++ code and the 1C external component API
+| Layer | Component | Responsibility |
+|---|---|---|
+| Encoder interface | `IEncoder` | Common contract for all barcode encoders |
+| Encoders | `QREncoder`, `DataMatrixEncoder`, `AztecEncoder` | Barcode-specific encoding logic |
+| Factory | `EncoderFactory` | Creates an encoder for the requested barcode type |
+| Service | `BarcodeService` | Main API for generating barcode SVG output |
+| Rendering | `SvgRenderer` | Converts barcode matrices into SVG markup |
+| 1C integration | `ComponentInterface` | Bridges C++ logic with the 1C external component API |
 
-See the UML diagram in the documentation:
+<div align="center">
 
-[UML Class Diagram](docs/uml-class-diagram.png)
+<img src="docs/uml-class-diagram.png" alt="UML Class Diagram" width="760">
+
+<br>
+
+<i>UML class diagram</i>
+
+</div>
+
+---
+
+## Requirements
+
+### Common Requirements
+
+- CMake 3.20+
+- C++20-compatible compiler
+- ZXing-cpp
+- 1C Native API SDK
+
+### Supported Compilers
+
+| Platform | Compiler |
+|---|---|
+| Windows | MSVC, MinGW-w64, Clang |
+| Linux | GCC, Clang |
+| macOS | Apple Clang |
+
+---
 
 ## Building
 
-### Prerequisites
+### Clone the Repository
 
-- CMake 3.20+
-- C++20-compatible compiler:
-  - **Windows:** MSVC (Visual Studio 2022), MinGW-w64, or Clang
-  - **macOS:** Apple Clang (via Xcode Command Line Tools)
-  - **Linux:** GCC or Clang
-
-**macOS — install dependencies:**
 ```bash
-xcode-select --install
-brew install cmake
+git clone https://github.com/Triler1/1c-barcode-generator.git
+cd 1c-barcode-generator
 ```
 
-**Linux — install dependencies:**
-```bash
-sudo apt install cmake g++ ninja-build
-```
+Make sure all third-party dependencies in `external/` are available before building.
 
-### Windows (x86)
+---
 
-1C:Enterprise client on Windows is 32-bit, so the component must be built for x86.
+<details>
+<summary><b>Windows build</b></summary>
 
-**Visual Studio:**
+<br>
+
+### Windows x86
+
+The 1C:Enterprise client on Windows is commonly used as a 32-bit application.  
+When targeting a 32-bit 1C client, build the component as **x86**.
+
+### Visual Studio 2022
+
 ```bat
 cmake -B build -S . -G "Visual Studio 17 2022" -A Win32
 cmake --build build --config Release
 ```
 
-**MinGW:**
+Result:
+
+```text
+build/Release/BarcodeGenerator.dll
+```
+
+### MinGW-w64
+
 ```bat
-cmake -B build -S . -G "MinGW Makefiles" -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++
+cmake -B build -S . -G "MinGW Makefiles" ^
+  -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc ^
+  -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++
+
 cmake --build build
 ```
 
-The resulting library will be at `build/Release/BarcodeGenerator.dll`.
+Result:
 
-### macOS (x86_64)
+```text
+build/BarcodeGenerator.dll
+```
 
-The 1C:Enterprise client for macOS is built for x86_64 and runs via Rosetta on Apple Silicon. Build for x86_64 regardless of your Mac's architecture.
+</details>
+
+---
+
+<details>
+<summary><b>macOS build</b></summary>
+
+<br>
+
+The 1C:Enterprise client for macOS is commonly built for `x86_64`.  
+On Apple Silicon, it may run through Rosetta, so build the component for `x86_64` unless your target 1C client requires another architecture.
+
+### Install Dependencies
+
+```bash
+xcode-select --install
+brew install cmake
+```
+
+### Build
 
 ```bash
 cmake -B build -S . -DCMAKE_OSX_ARCHITECTURES=x86_64
 cmake --build build
 ```
 
-The resulting library will be at `build/libBarcodeGenerator.dylib`.
+Result:
 
-### Linux
+```text
+build/libBarcodeGenerator.dylib
+```
+
+</details>
+
+---
+
+<details>
+<summary><b>Linux build</b></summary>
+
+<br>
+
+### Install Dependencies
+
+```bash
+sudo apt update
+sudo apt install cmake g++ ninja-build
+```
+
+### Build
 
 ```bash
 cmake -B build -S .
 cmake --build build
 ```
 
-The resulting library will be at `build/libBarcodeGenerator.so`.
+Result:
+
+```text
+build/libBarcodeGenerator.so
+```
+
+</details>
+
+---
+
+## Build Artifacts
+
+| Platform | Library |
+|---|---|
+| Windows | `BarcodeGenerator.dll` |
+| Linux | `libBarcodeGenerator.so` |
+| macOS | `libBarcodeGenerator.dylib` |
+
+---
+
+## Testing
+
+Unit tests are located in the `tests/` directory.
+
+The test suite covers:
+
+- QR encoder;
+- DataMatrix encoder;
+- Aztec encoder;
+- encoder factory;
+- barcode service;
+- SVG renderer;
+- barcode matrix behavior.
+
+---
 
 ## Documentation
 
-Detailed project documentation, implementation plan, and UML diagrams are available here:
+Project documentation, architecture notes, implementation details, and UML diagrams are located in the `docs/` directory.
 
-[Project Documentation](docs/README.md)
+| Document | Description |
+|---|---|
+| [Project Documentation](docs/README.md) | Main documentation entry point |
+| [Architecture](docs/architecture.md) | Architecture overview |
+| [Implementation Plan](docs/implementation-plan.md) | Development plan and implementation notes |
+| [UML Class Diagram](docs/uml-class-diagram.png) | Visual class diagram |
+
+---
 
 ## External Libraries
 
-- **ZXing-cpp** — library used for generating barcode matrices  
-  https://github.com/zxing-cpp/zxing-cpp
+| Library | Purpose | License |
+|---|---|---|
+| [ZXing-cpp](https://github.com/zxing-cpp/zxing-cpp) | Barcode encoding | Apache License 2.0 |
+| 1C Native API SDK | 1C external component integration | See SDK license |
+
+---
+
+## Project Status
+
+The project is under active development.
+
+Current focus:
+
+- stable barcode generation core;
+- 1C external component integration;
+- SVG rendering;
+- cross-platform builds;
+- unit test coverage.
+
+---
+
+## Roadmap
+
+Planned improvements:
+
+- extended 1C usage examples;
+- improved Unicode handling;
+- more complete platform-specific build documentation;
+- CI builds for Windows, Linux, and macOS;
+- expanded test coverage;
+- example generated SVG previews;
+- release packages for each supported platform.
+
+---
 
 ## License
 
-This project is licensed under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Apache License 2.0**.
+
+See the [LICENSE](LICENSE) file for details.
+
+---
 
 ## Third-Party Licenses
 
-- [zxing-cpp](https://github.com/zxing-cpp/zxing-cpp) — Apache License 2.0 (see [licenses/LICENSE.zxing-cpp](licenses/LICENSE.zxing-cpp)).
+- [ZXing-cpp](https://github.com/zxing-cpp/zxing-cpp) — Apache License 2.0  
+  See [licenses/LICENSE.zxing-cpp](licenses/LICENSE.zxing-cpp).
+
+---
+
+<div align="center">
+
+Made for 1C:Enterprise barcode generation in clean SVG format.
+
+</div>
