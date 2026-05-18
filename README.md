@@ -1,6 +1,12 @@
 # SVG Barcode Generator for 1C
 
-C++ external component for 1C:Enterprise for generating 2D barcodes (QR, DataMatrix, Aztec, etc.) in SVG format.
+![C++20](https://img.shields.io/badge/C%2B%2B-20-0A66C2?logo=c%2B%2B&logoColor=white&style=for-the-badge)
+![CMake](https://img.shields.io/badge/CMake-3.20+-1E2A44?logo=cmake&logoColor=white&style=for-the-badge)
+![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux%20%7C%20macOS-2D2D2D?logo=windows11&logoColor=white&style=for-the-badge)
+![Powered by ZXing](https://img.shields.io/badge/Powered%20by-ZXing--cpp-6B238E?logo=barcode&logoColor=white&style=for-the-badge)
+![License](https://img.shields.io/badge/License-Educational-1F7A5E?logo=book&logoColor=white&style=for-the-badge)
+
+C++ external component for 1C:Enterprise for generating 2D barcodes (QR, DataMatrix, Aztec) in SVG format.
 
 ## Project Goal
 
@@ -19,10 +25,13 @@ The project uses the ZXing-cpp library for barcode encoding and converts the res
 
 ## Repository Structure
 
-- `include/` — public headers and encoder interfaces
-- `src/` — implementation of encoders and services
-- `docs/` — project documentation and UML diagrams
-- `tests/` — unit tests
+```
+include/        — public headers and encoder interfaces
+src/            — implementation of encoders and services
+external/       — third-party libraries (ZXing-cpp, 1C Native API SDK)
+docs/           — project documentation and UML diagrams
+tests/          — unit tests
+```
 
 ## Architecture Overview
 
@@ -43,9 +52,64 @@ See the UML diagram in the documentation:
 
 [UML Class Diagram](docs/uml-class-diagram.png)
 
-## Build System
+## Building
 
-The project uses **CMake** as the build system.
+### Prerequisites
+
+- CMake 3.20+
+- C++20-compatible compiler:
+  - **Windows:** MSVC (Visual Studio 2022), MinGW-w64, or Clang
+  - **macOS:** Apple Clang (via Xcode Command Line Tools)
+  - **Linux:** GCC or Clang
+
+**macOS — install dependencies:**
+```bash
+xcode-select --install
+brew install cmake
+```
+
+**Linux — install dependencies:**
+```bash
+sudo apt install cmake g++ ninja-build
+```
+
+### Windows (x86)
+
+1C:Enterprise client on Windows is 32-bit, so the component must be built for x86.
+
+**Visual Studio:**
+```bat
+cmake -B build -S . -G "Visual Studio 17 2022" -A Win32
+cmake --build build --config Release
+```
+
+**MinGW:**
+```bat
+cmake -B build -S . -G "MinGW Makefiles" -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++
+cmake --build build
+```
+
+The resulting library will be at `build/Release/BarcodeGenerator.dll`.
+
+### macOS (x86_64)
+
+The 1C:Enterprise client for macOS is built for x86_64 and runs via Rosetta on Apple Silicon. Build for x86_64 regardless of your Mac's architecture.
+
+```bash
+cmake -B build -S . -DCMAKE_OSX_ARCHITECTURES=x86_64
+cmake --build build
+```
+
+The resulting library will be at `build/libBarcodeGenerator.dylib`.
+
+### Linux
+
+```bash
+cmake -B build -S .
+cmake --build build
+```
+
+The resulting library will be at `build/libBarcodeGenerator.so`.
 
 ## Documentation
 
