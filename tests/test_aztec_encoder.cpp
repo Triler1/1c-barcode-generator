@@ -12,7 +12,12 @@ protected:
 
 TEST_F(AztecEncoderTest, EmptyData_ThrowsInvalidArgument)
 {
-    EXPECT_THROW(encoder.Encode("", defaults), std::invalid_argument);
+    EXPECT_THROW(
+    {
+        (void)encoder.Encode("", defaults);
+    },
+    std::invalid_argument
+    );
 }
 
 TEST_F(AztecEncoderTest, ValidData_ReturnsNonEmptyMatrix)

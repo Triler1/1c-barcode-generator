@@ -15,15 +15,30 @@ protected:
 
 // 1. Пустая строка → исключение для всех типов
 TEST_F(BarcodeServiceTest, EmptyData_QR_ThrowsInvalidArgument) {
-    EXPECT_THROW(service.Generate("", BarcodeType::QR, defaults), std::invalid_argument);
+    EXPECT_THROW(
+    {
+        (void)service.Generate("", BarcodeType::QR, defaults);
+    },
+    std::invalid_argument
+    );
 }
 
 TEST_F(BarcodeServiceTest, EmptyData_DataMatrix_ThrowsInvalidArgument) {
-    EXPECT_THROW(service.Generate("", BarcodeType::DataMatrix, defaults), std::invalid_argument);
+    EXPECT_THROW(
+    {
+        (void)service.Generate("", BarcodeType::DataMatrix, defaults);
+    },
+    std::invalid_argument
+    );
 }
 
 TEST_F(BarcodeServiceTest, EmptyData_Aztec_ThrowsInvalidArgument) {
-    EXPECT_THROW(service.Generate("", BarcodeType::Aztec, defaults), std::invalid_argument);
+    EXPECT_THROW(
+    {
+        (void)service.Generate("", BarcodeType::Aztec, defaults);
+    },
+    std::invalid_argument
+    );
 }
 
 // 2. Валидные данные → возвращается корректный SVG

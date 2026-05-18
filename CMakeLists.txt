@@ -18,19 +18,26 @@ set(BUILD_TESTS    OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(external/zxing-cpp EXCLUDE_FROM_ALL)
 
-set(SOURCES
+set(BARCODE_CORE_SOURCES
     src/renderers/svg_renderer.cpp
     src/services/barcode_service.cpp
     src/factories/encoder_factory.cpp
     src/encoders/qr_encoder.cpp
     src/encoders/datamatrix_encoder.cpp
     src/encoders/aztec_encoder.cpp
+)
+
+set(COMPONENT_SOURCES
+    ${BARCODE_CORE_SOURCES}
     src/component/component_interface.cpp
-    src/dllmain.cpp 
+    src/dllmain.cpp
 )
 
 if(WIN32)
-    list(APPEND SOURCES AddInNative.rc AddInNative.def)
+    list(APPEND COMPONENT_SOURCES
+        AddInNative.rc
+        AddInNative.def
+    )
 endif()
 
 if (UNIX)
@@ -41,7 +48,7 @@ else()
     add_definitions(-DUNICODE -D_UNICODE -DWIN32 -D_USRDLL -D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE -DADDINCPP_EXPORTS)
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
+add_library(${PROJECT_NAME} SHARED ${COMPONENT_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -93,3 +100,48 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
 )
+
+option(BARCODE_GENERATOR_BUILD_TESTS "Build unit tests" ON)
+
+if(BARCODE_GENERATOR_BUILD_TESTS)
+    include(FetchContent)
+
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+    set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
+
+    FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    )
+
+    FetchContent_MakeAvailable(googletest)
+
+    enable_testing()
+
+    add_executable(${PROJECT_NAME}-tests
+        tests/test_qr_encoder.cpp
+        tests/test_datamatrix_encoder.cpp
+        tests/test_aztec_encoder.cpp
+        tests/test_encoder_factory.cpp
+        tests/test_barcode_service.cpp
+        tests/test_svg_renderer.cpp
+
+        ${BARCODE_CORE_SOURCES}
+    )
+
+    target_include_directories(${PROJECT_NAME}-tests
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
+
+    target_link_libraries(${PROJECT_NAME}-tests
+        PRIVATE
+            ZXing::ZXing
+            GTest::gtest_main
+    )
+
+    include(GoogleTest)
+    gtest_discover_tests(${PROJECT_NAME}-tests)
+endif()
