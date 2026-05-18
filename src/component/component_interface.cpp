@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <string>
 #include <atomic>
+#include <limits>
 
 #if defined(__linux__) || defined(__APPLE__)
 #include <iconv.h>
@@ -135,6 +136,163 @@ long DestroyObject(IComponentBase** pIntf) {
 
 const WCHAR_T* GetClassNames() {
     return s_classNames.c_str();
+}
+
+namespace {
+
+constexpr char32_t ReplacementChar = 0xFFFD;
+
+std::size_t WideLength(const WCHAR_T* value) {
+    if (!value) {
+        return 0;
+    }
+
+    std::size_t length = 0;
+
+    while (value[length] != 0) {
+        ++length;
+    }
+
+    return length;
+}
+
+void AppendUtf8(std::string& output, char32_t codePoint) {
+    if (codePoint <= 0x7F) {
+        output.push_back(static_cast<char>(codePoint));
+    } else if (codePoint <= 0x7FF) {
+        output.push_back(static_cast<char>(0xC0 | (codePoint >> 6)));
+        output.push_back(static_cast<char>(0x80 | (codePoint & 0x3F)));
+    } else if (codePoint <= 0xFFFF) {
+        output.push_back(static_cast<char>(0xE0 | (codePoint >> 12)));
+        output.push_back(static_cast<char>(0x80 | ((codePoint >> 6) & 0x3F)));
+        output.push_back(static_cast<char>(0x80 | (codePoint & 0x3F)));
+    } else if (codePoint <= 0x10FFFF) {
+        output.push_back(static_cast<char>(0xF0 | (codePoint >> 18)));
+        output.push_back(static_cast<char>(0x80 | ((codePoint >> 12) & 0x3F)));
+        output.push_back(static_cast<char>(0x80 | ((codePoint >> 6) & 0x3F)));
+        output.push_back(static_cast<char>(0x80 | (codePoint & 0x3F)));
+    } else {
+        AppendUtf8(output, ReplacementChar);
+    }
+}
+
+std::string WideToUtf8(const WCHAR_T* input, std::size_t length) {
+    std::string output;
+
+    if (!input || length == 0) {
+        return output;
+    }
+
+    output.reserve(length * 2);
+
+    for (std::size_t i = 0; i < length; ++i) {
+        char32_t codePoint = static_cast<char32_t>(input[i]);
+
+        if constexpr (sizeof(WCHAR_T) == 2) {
+            if (codePoint >= 0xD800 && codePoint <= 0xDBFF) {
+                if (i + 1 < length) {
+                    char32_t low = static_cast<char32_t>(input[i + 1]);
+
+                    if (low >= 0xDC00 && low <= 0xDFFF) {
+                        codePoint =
+                            0x10000 +
+                            (((codePoint - 0xD800) << 10) | (low - 0xDC00));
+                        ++i;
+                    } else {
+                        codePoint = ReplacementChar;
+                    }
+                } else {
+                    codePoint = ReplacementChar;
+                }
+            } else if (codePoint >= 0xDC00 && codePoint <= 0xDFFF) {
+                codePoint = ReplacementChar;
+            }
+        }
+
+        AppendUtf8(output, codePoint);
+    }
+
+    return output;
+}
+
+char32_t DecodeUtf8CodePoint(std::string_view input, std::size_t& index) {
+    const auto byte = [](char ch) {
+        return static_cast<unsigned char>(ch);
+    };
+
+    unsigned char first = byte(input[index]);
+
+    if (first <= 0x7F) {
+        ++index;
+        return first;
+    }
+
+    char32_t codePoint = 0;
+    std::size_t extraBytes = 0;
+
+    if ((first & 0xE0) == 0xC0) {
+        codePoint = first & 0x1F;
+        extraBytes = 1;
+    } else if ((first & 0xF0) == 0xE0) {
+        codePoint = first & 0x0F;
+        extraBytes = 2;
+    } else if ((first & 0xF8) == 0xF0) {
+        codePoint = first & 0x07;
+        extraBytes = 3;
+    } else {
+        ++index;
+        return ReplacementChar;
+    }
+
+    if (index + extraBytes >= input.size()) {
+        index = input.size();
+        return ReplacementChar;
+    }
+
+    for (std::size_t i = 1; i <= extraBytes; ++i) {
+        unsigned char current = byte(input[index + i]);
+
+        if ((current & 0xC0) != 0x80) {
+            ++index;
+            return ReplacementChar;
+        }
+
+        codePoint = (codePoint << 6) | (current & 0x3F);
+    }
+
+    index += extraBytes + 1;
+
+    if (codePoint > 0x10FFFF) {
+        return ReplacementChar;
+    }
+
+    return codePoint;
+}
+
+std::basic_string<WCHAR_T> Utf8ToWide(std::string_view input) {
+    std::basic_string<WCHAR_T> output;
+
+    std::size_t index = 0;
+
+    while (index < input.size()) {
+        char32_t codePoint = DecodeUtf8CodePoint(input, index);
+
+        if constexpr (sizeof(WCHAR_T) == 2) {
+            if (codePoint <= 0xFFFF) {
+                output.push_back(static_cast<WCHAR_T>(codePoint));
+            } else {
+                codePoint -= 0x10000;
+                output.push_back(static_cast<WCHAR_T>(0xD800 + (codePoint >> 10)));
+                output.push_back(static_cast<WCHAR_T>(0xDC00 + (codePoint & 0x3FF)));
+            }
+        } else {
+            output.push_back(static_cast<WCHAR_T>(codePoint));
+        }
+    }
+
+    return output;
+}
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -330,38 +488,48 @@ void ComponentInterface::addError(uint32_t wcode, const wchar_t* source,
 }
 
 bool ComponentInterface::returnWString(tVariant* pvarRetValue, const std::string& utf8str) {
-    if (!m_iMemory)
+    if (!pvarRetValue || !m_iMemory) {
         return false;
+    }
 
-    // 1. Сначала переводим из UTF-8 std::string в стандартную системную wstring
-    std::wstring wstr(utf8str.begin(), utf8str.end());
-    size_t len = wstr.size() + 1; // +1 для терминирующего нуля
+    auto wide = Utf8ToWide(utf8str);
 
-    // 2. Выделяем память строго с учетом размера WCHAR_T на текущей ОС
-    if (!m_iMemory->AllocMemory((void**)&pvarRetValue->pwstrVal, (unsigned)len * sizeof(WCHAR_T)))
+    if (wide.size() > std::numeric_limits<uint32_t>::max()) {
         return false;
+    }
 
-    // 3. Используем твою функцию конвертации, которая правильно заполнит типы на Windows и Mac
-    convToShortWchar(&pvarRetValue->pwstrVal, wstr.c_str(), len);
-    
-    pvarRetValue->wstrLen = (unsigned)(len - 1);
-    TV_VT(pvarRetValue) = VTYPE_PWSTR;
+    const std::size_t len = wide.size() + 1;
+    const unsigned long bytes = static_cast<unsigned long>(len * sizeof(WCHAR_T));
+
+    tVarInit(pvarRetValue);
+
+    if (!m_iMemory->AllocMemory(
+            reinterpret_cast<void**>(&pvarRetValue->pwstrVal),
+            bytes
+        )) {
+        return false;
+    }
+
+    for (std::size_t i = 0; i < wide.size(); ++i) {
+        pvarRetValue->pwstrVal[i] = wide[i];
+    }
+
+    pvarRetValue->pwstrVal[wide.size()] = 0;
+    pvarRetValue->wstrLen = static_cast<uint32_t>(wide.size());
+    pvarRetValue->vt = VTYPE_PWSTR;
+
     return true;
 }
 
 std::string ComponentInterface::extractString(tVariant* param) const {
-    if (TV_VT(param) != VTYPE_PWSTR || !param->pwstrVal)
+    if (!param || param->vt != VTYPE_PWSTR || !param->pwstrVal) {
         return {};
+    }
 
-    wchar_t* wstr = nullptr;
-    convFromShortWchar(&wstr, param->pwstrVal);
-    std::wstring ws(wstr);
-    delete[] wstr;
-
-    // Конвертируем wstring → string (UTF-8 для многобайтных данных).
-    // Для данных штрихкодов (ASCII, цифры, латиница) этого достаточно.
-    // Для полноценного UTF-8 замените на wcstombs_s или std::codecvt.
-    return std::string(ws.begin(), ws.end());
+    return WideToUtf8(
+        param->pwstrVal,
+        static_cast<std::size_t>(param->wstrLen)
+    );
 }
 
 bool ComponentInterface::extractInt(tVariant* param, int& out) const {
