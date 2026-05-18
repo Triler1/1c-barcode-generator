@@ -4,7 +4,7 @@
 ![CMake](https://img.shields.io/badge/CMake-3.20+-1E2A44?logo=cmake&logoColor=white&style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux%20%7C%20macOS-2D2D2D?logo=windows11&logoColor=white&style=for-the-badge)
 ![Powered by ZXing](https://img.shields.io/badge/Powered%20by-ZXing--cpp-6B238E?logo=barcode&logoColor=white&style=for-the-badge)
-![License](https://img.shields.io/badge/License-Educational-1F7A5E?logo=book&logoColor=white&style=for-the-badge)
+![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)
 
 C++ external component for 1C:Enterprise for generating 2D barcodes (QR, DataMatrix, Aztec) in SVG format.
 
@@ -124,4 +124,8 @@ Detailed project documentation, implementation plan, and UML diagrams are availa
 
 ## License
 
-This project is created for educational purposes.
+This project is licensed under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for details.
+
+## Third-Party Licenses
+
+- [zxing-cpp](https://github.com/zxing-cpp/zxing-cpp) — Apache License 2.0 (see [licenses/LICENSE.zxing-cpp](licenses/LICENSE.zxing-cpp)).
