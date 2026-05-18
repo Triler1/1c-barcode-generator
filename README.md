@@ -25,6 +25,8 @@ for generating 2D barcodes in clean SVG format**
 &nbsp;•&nbsp;
 <a href="#building">Building</a>
 &nbsp;•&nbsp;
+<a href="#usage-from-1c">Usage from 1C</a>
+&nbsp;•&nbsp;
 <a href="#testing">Testing</a>
 &nbsp;•&nbsp;
 <a href="#documentation">Documentation</a>
@@ -444,6 +446,117 @@ data, moduleSize, margin
 
 ---
 
+### Advanced Examples
+
+#### Reusable Component Loader
+
+```bsl
+Функция СоздатьГенераторШтрихкодов() Экспорт
+
+    ПутьКомпоненты = "C:\Path\To\BarcodeGenerator.dll";
+
+    Подключено = ПодключитьВнешнююКомпоненту(
+        ПутьКомпоненты,
+        "BarcodeGenerator",
+        ТипВнешнейКомпоненты.Native
+    );
+
+    Если Не Подключено Тогда
+        ВызватьИсключение "Failed to load BarcodeGenerator component";
+    КонецЕсли;
+
+    Возврат Новый("AddIn.BarcodeGenerator.BarcodeGenerator");
+
+КонецФункции
+```
+
+#### Generate and Save DataMatrix
+
+```bsl
+Генератор = СоздатьГенераторШтрихкодов();
+
+SVG = Генератор.СформироватьДатаМатрикс(
+    "010460123456789021ABC123",
+    10,
+    4
+);
+
+ПутьФайла = "C:\Temp\datamatrix.svg";
+
+Запись = Новый ЗаписьТекста;
+Запись.Открыть(ПутьФайла, КодировкаТекста.UTF8);
+Запись.Записать(SVG);
+Запись.Закрыть();
+```
+
+#### Generate Multiple Barcode Types
+
+```bsl
+Генератор = СоздатьГенераторШтрихкодов();
+
+QRCodeSVG = Генератор.СформироватьQR(
+    "https://example.com",
+    10,
+    4
+);
+
+DataMatrixSVG = Генератор.СформироватьДатаМатрикс(
+    "010460123456789021ABC123",
+    10,
+    4
+);
+
+AztecSVG = Генератор.СформироватьAztec(
+    "AZTEC-123456",
+    10,
+    4
+);
+```
+
+#### Custom Size and Margin
+
+```bsl
+Генератор = СоздатьГенераторШтрихкодов();
+
+Данные = "1234567890";
+
+// Smaller barcode
+SVGSmall = Генератор.СформироватьДатаМатрикс(
+    Данные,
+    5,
+    2
+);
+
+// Larger barcode
+SVGLarge = Генератор.СформироватьДатаМатрикс(
+    Данные,
+    12,
+    6
+);
+```
+
+#### Error Handling
+
+```bsl
+Попытка
+
+    Генератор = СоздатьГенераторШтрихкодов();
+
+    SVG = Генератор.СформироватьДатаМатрикс(
+        "1234567890",
+        10,
+        4
+    );
+
+Исключение
+
+    Сообщить("Barcode generation failed: " + ОписаниеОшибки());
+
+КонецПопытки;
+```
+
+---
+
 ### Notes
 
 - The returned value is an SVG string.
@@ -509,7 +622,6 @@ Current focus:
 
 Planned improvements:
 
-- more advanced 1C usage examples;
 - improved Unicode handling;
 - more complete platform-specific build documentation;
 - CI builds for Windows, Linux, and macOS;
