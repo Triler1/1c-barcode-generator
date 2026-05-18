@@ -93,7 +93,7 @@ static const wchar_t* g_MethodNames[] = {
 
 static const wchar_t* g_MethodNamesRu[] = {
     L"СформироватьQR",
-    L"СформироватьDataMatrix",
+    L"СформироватьДатаМатрикс",
     L"СформироватьAztec",
 };
 
