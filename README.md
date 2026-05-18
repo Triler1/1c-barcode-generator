@@ -12,6 +12,7 @@ for generating 2D barcodes in clean SVG format**
 <img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux%20%7C%20macOS-2D2D2D?style=for-the-badge" alt="Platforms">
 <img src="https://img.shields.io/badge/Powered%20by-ZXing--cpp-6B238E?style=for-the-badge" alt="ZXing-cpp">
 <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge" alt="License">
+<img src="https://github.com/Triler1/1c-barcode-generator/actions/workflows/ci.yml/badge.svg" alt="CI">
 
 <br>
 <br>
