@@ -287,6 +287,172 @@ build/libBarcodeGenerator.so
 
 ---
 
+## Usage from 1C
+
+After building the native library, it can be loaded in 1C as an external component.
+
+### Load the Component
+
+```bsl
+ПутьКомпоненты = "C:\Path\To\BarcodeGenerator.dll";
+
+Подключено = ПодключитьВнешнююКомпоненту(
+    ПутьКомпоненты,
+    "BarcodeGenerator",
+    ТипВнешнейКомпоненты.Native
+);
+
+Если Не Подключено Тогда
+    ВызватьИсключение "Failed to load BarcodeGenerator component";
+КонецЕсли;
+
+Генератор = Новый("AddIn.BarcodeGenerator.BarcodeGenerator");
+```
+
+For Linux and macOS, use the corresponding shared library:
+
+```bsl
+// Linux
+ПутьКомпоненты = "/path/to/libBarcodeGenerator.so";
+
+// macOS
+ПутьКомпоненты = "/path/to/libBarcodeGenerator.dylib";
+```
+
+---
+
+### Generate QR Code
+
+```bsl
+Данные = "https://example.com";
+РазмерМодуля = 10;
+Отступ = 4;
+
+SVG = Генератор.GenerateQR(
+    Данные,
+    РазмерМодуля,
+    Отступ
+);
+```
+
+---
+
+### Generate DataMatrix
+
+```bsl
+Данные = "010460123456789021ABC123";
+РазмерМодуля = 10;
+Отступ = 4;
+
+SVG = Генератор.GenerateDataMatrix(
+    Данные,
+    РазмерМодуля,
+    Отступ
+);
+```
+
+---
+
+### Generate Aztec
+
+```bsl
+Данные = "AZTEC-123456";
+РазмерМодуля = 10;
+Отступ = 4;
+
+SVG = Генератор.GenerateAztec(
+    Данные,
+    РазмерМодуля,
+    Отступ
+);
+```
+
+---
+
+### Save SVG to File
+
+```bsl
+ПутьФайла = "C:\Temp\barcode.svg";
+
+Запись = Новый ЗаписьТекста;
+Запись.Открыть(ПутьФайла, КодировкаТекста.UTF8);
+Запись.Записать(SVG);
+Запись.Закрыть();
+
+Сообщить("SVG barcode saved to: " + ПутьФайла);
+```
+
+---
+
+### Method Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `data` | String | Text or payload to encode |
+| `moduleSize` | Number | Size of one barcode module in SVG units |
+| `margin` | Number | Quiet zone around the barcode |
+
+Example:
+
+```bsl
+SVG = Генератор.GenerateDataMatrix("1234567890", 8, 2);
+```
+
+---
+
+### Available Methods
+
+| Method | Description |
+|---|---|
+| `GenerateQR(data, moduleSize, margin)` | Generates QR Code SVG |
+| `GenerateDataMatrix(data, moduleSize, margin)` | Generates DataMatrix SVG |
+| `GenerateAztec(data, moduleSize, margin)` | Generates Aztec SVG |
+
+---
+
+### Russian Method Aliases
+
+The component also provides Russian aliases for barcode generation methods.
+
+You can use either English method names:
+
+```bsl
+SVG = Генератор.GenerateQR("Hello", 10, 4);
+SVG = Генератор.GenerateDataMatrix("1234567890", 10, 4);
+SVG = Генератор.GenerateAztec("AZTEC-123", 10, 4);
+```
+
+or Russian aliases:
+
+```bsl
+SVG = Генератор.СформироватьQR("Hello", 10, 4);
+SVG = Генератор.СформироватьДатаМатрикс("1234567890", 10, 4);
+SVG = Генератор.СформироватьAztec("AZTEC-123", 10, 4);
+```
+
+| English method | Russian alias | Description |
+|---|---|---|
+| `GenerateQR` | `СформироватьQR` | Generates QR Code SVG |
+| `GenerateDataMatrix` | `СформироватьДатаМатрикс` | Generates DataMatrix SVG |
+| `GenerateAztec` | `СформироватьAztec` | Generates Aztec SVG |
+
+Both English method names and Russian aliases accept the same parameters:
+
+```text
+data, moduleSize, margin
+```
+
+---
+
+### Notes
+
+- The returned value is an SVG string.
+- SVG can be saved to a file, embedded into HTML, or used in generated documents.
+- For initial testing, use digits or Latin characters.
+- Full Unicode handling depends on string conversion between 1C and the native component.
+
+---
+
 ## Testing
 
 Unit tests are located in the `tests/` directory.
@@ -343,7 +509,7 @@ Current focus:
 
 Planned improvements:
 
-- extended 1C usage examples;
+- more advanced 1C usage examples;
 - improved Unicode handling;
 - more complete platform-specific build documentation;
 - CI builds for Windows, Linux, and macOS;
