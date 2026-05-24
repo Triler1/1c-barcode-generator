@@ -108,6 +108,19 @@ TEST_F(DataMatrixEncoderTest, DigitsOnly_ReturnsNonEmptyMatrix) {
     EXPECT_GT(result.GetHeight(), 0u);
 }
 
+// Все печатные ASCII‑символы не вызывают падения
+TEST_F(DataMatrixEncoderTest, AllPrintableAscii_DoesNotCrash) {
+    std::string ascii;
+    for (char c = 32; c < 127; ++c) ascii += c;   // 95 символов
+    EXPECT_NO_THROW(
+        {
+            (void)encoder.Encode(ascii, defaults);
+        }
+    );
+    BarcodeMatrix result = encoder.Encode(ascii, defaults);
+    EXPECT_FALSE(result.IsEmpty());
+}
+
 // В матрице есть хотя бы одна чёрная ячейка
 TEST_F(DataMatrixEncoderTest, Matrix_HasAtLeastOneBlackCell) {
     BarcodeMatrix result = encoder.Encode("Some data", defaults);
