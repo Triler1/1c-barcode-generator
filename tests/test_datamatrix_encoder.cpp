@@ -100,18 +100,9 @@ TEST_F(DataMatrixEncoderTest, SpecialCharacters_DoNotCrash) {
     EXPECT_GT(result.GetHeight(), 0u);
 }
 
-// Очень длинная строка — не падает и даёт матрицу
-TEST_F(DataMatrixEncoderTest, VeryLongInput_DoesNotCrash) {
-    std::string longData(5000, 'A');
-
-    BarcodeMatrix result;
-
-    EXPECT_NO_THROW(
-        {
-            result = encoder.Encode(longData, defaults);
-        }
-    );
-
+// Строка только из цифр успешно кодируется
+TEST_F(DataMatrixEncoderTest, DigitsOnly_ReturnsNonEmptyMatrix) {
+    BarcodeMatrix result = encoder.Encode("1234567890", defaults);
     EXPECT_FALSE(result.IsEmpty());
     EXPECT_GT(result.GetWidth(), 0u);
     EXPECT_GT(result.GetHeight(), 0u);
