@@ -494,7 +494,7 @@ bool ComponentInterface::returnWString(tVariant* pvarRetValue, const std::string
 
     auto wide = Utf8ToWide(utf8str);
 
-    if (wide.size() > std::numeric_limits<uint32_t>::max()) {
+    if (wide.size() > (std::numeric_limits<uint32_t>::max)()) {
         return false;
     }
 
